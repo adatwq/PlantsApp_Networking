@@ -9,6 +9,6 @@ import Foundation
 
 
 struct Plant: Codable, Identifiable{
-    let id: UUID
-    let name: String
+    var id: UUID?
+    var name: String
 }

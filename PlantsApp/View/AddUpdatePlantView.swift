@@ -22,9 +22,10 @@ struct AddUpdatePlantView: View {
             .navigationTitle("New plant")
             .toolbar{
                 ToolbarItem(placement: .topBarLeading) {
-                    
-                    Button("Cancel"){
+                    if !isUpdate{
+                        Button("Cancel"){
                             dismiss()
+                        }
                     }
                 }
                 ToolbarItem(placement: .topBarTrailing) {
@@ -32,7 +33,7 @@ struct AddUpdatePlantView: View {
                     Button("Save"){
                         Task{
                             if isUpdate{
-                                await viewModel.updatePlant()
+                                await viewModel.updatePlant(newPlant: .init(id:plantToUpdate?.id , name: viewModel.name))
                             }
                             else {
                                 await viewModel.savePlant()
@@ -43,10 +44,18 @@ struct AddUpdatePlantView: View {
                     }
                 }
             }
+            .alert("Error", isPresented: $viewModel.showAlert) {
+                Button("Ok"){ }
+            } message: {
+                Text(viewModel.alertMessage)
+            }
             .onAppear{
                 if let plantToUpdate{
                     self.isUpdate = true
                     self.viewModel.name = plantToUpdate.name
+                }
+                else{
+                    self.viewModel.name = ""
                 }
             }
         }

@@ -25,9 +25,12 @@ struct PlantsListView: View {
                                 Text(plant.name)
                             }
                             
-                            
-                            
                         }
+                        .onDelete(perform: { indexSet in
+                            Task{
+                              await viewModel.deletePlant(indexSet: indexSet)
+                            }
+                        })
                     }.listStyle(.plain)
                 }
             }
@@ -43,6 +46,11 @@ struct PlantsListView: View {
             }
             .sheet(isPresented: $viewModel.showAddPlantSheet) {
                 AddUpdatePlantView(viewModel: viewModel)
+            }
+            .alert("Error", isPresented: $viewModel.showAlert) {
+                Button("Ok"){ }
+            } message: {
+                Text(viewModel.alertMessage)
             }
             .task {
                await viewModel.fetchPlants()
